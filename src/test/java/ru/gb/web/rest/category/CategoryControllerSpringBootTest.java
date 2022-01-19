@@ -1,6 +1,7 @@
 package ru.gb.web.rest.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.bytebuddy.utility.RandomString;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -88,7 +89,7 @@ class CategoryControllerSpringBootTest {
     }
 
     @Test
-    public void createCategoryWithNullTitle() throws Exception {
+    public void createCategoryWithNullTitleExpectBadRequest() throws Exception {
         mockMvc.perform(post("/api/v1/category")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(CategoryDto.builder()
@@ -96,5 +97,38 @@ class CategoryControllerSpringBootTest {
                         .build())
                 ))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createCategoryWithEmptyTitleExpectBadRequest() throws Exception {
+        mockMvc.perform(post("/api/v1/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(CategoryDto.builder()
+                                .title("")
+                                .build())
+                        ))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createCategoryWithMaxTitleExpectBadRequest() throws Exception {
+        mockMvc.perform(post("/api/v1/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(CategoryDto.builder()
+                                .title(RandomString.make(256))
+                                .build())
+                        ))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createCategoryWithMaxTitleExpectCreate() throws Exception {
+        mockMvc.perform(post("/api/v1/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(CategoryDto.builder()
+                                .title(RandomString.make(255))
+                                .build())
+                        ))
+                .andExpect(status().isCreated());
     }
 }

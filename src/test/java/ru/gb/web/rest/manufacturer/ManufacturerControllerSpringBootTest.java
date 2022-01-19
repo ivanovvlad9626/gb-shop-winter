@@ -1,4 +1,4 @@
-package ru.gb.web.rest;
+package ru.gb.web.rest.manufacturer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
